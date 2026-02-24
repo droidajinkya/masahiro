@@ -1,0 +1,75 @@
+{
+  "expo": {
+    "name": "Scanner Pro",
+    "slug": "scanner-pro",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#111111"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.scanpro.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Scanner Pro needs camera access to scan QR codes and barcodes.",
+        "NSPhotoLibraryUsageDescription": "Scanner Pro needs photo library access to scan QR codes from your images.",
+        "NSContactsUsageDescription": "Scanner Pro needs contacts access to save scanned contact information.",
+        "NSLocalNetworkUsageDescription": "Scanner Pro uses local network to connect to Wi-Fi networks from scanned QR codes."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#111111"
+      },
+      "package": "com.scanpro.app",
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "READ_CONTACTS",
+        "WRITE_CONTACTS",
+        "VIBRATE",
+        "ACCESS_WIFI_STATE",
+        "CHANGE_WIFI_STATE"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Scanner Pro needs camera access to scan QR codes and barcodes."
+        }
+      ],
+      [
+        "expo-barcode-scanner",
+        {
+          "cameraPermission": "Scanner Pro needs camera access to scan QR codes and barcodes."
+        }
+      ],
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Scanner Pro needs photo library access to scan QR codes from your images."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Scanner Pro to access your photos.",
+          "savePhotosPermission": "Allow Scanner Pro to save photos.",
+          "isAccessMediaLocationEnabled": true
+        }
+      ],
+      "expo-contacts"
+    ]
+  }
+}
