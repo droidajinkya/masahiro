@@ -1,33 +1,43 @@
-# Masahiro
+# Scanner Pro
 
-Offline-first Flutter QR scanner app for Android and iOS.
+A cross-platform QR code scanner app built with React Native + Expo.
+
+## Tech Stack
+
+- React Native + Expo (managed workflow)
+- TypeScript
+- React Navigation (Bottom Tabs)
+- expo-camera / expo-barcode-scanner
+- AsyncStorage
 
 ## Features
-- Camera QR scanning using `mobile_scanner`
-- Gallery image QR decoding using `image_picker`
-- Auto flashlight enable in low-light (ambient lux stream) with manual flash toggle
-- Offline-first sync flow:
-  - Save scan locally (Hive)
-  - Attempt backend send immediately
-  - Queue API payload and retry automatically when connectivity restores
-- Strict camera permission error message with gallery fallback
-- Scan history and details view persisted across app restarts
-- Light and dark theme via system theme mode
+
+- Live camera QR scanning with animated viewfinder
+- Scan from photo library
+- Supports 9 QR types: URL, Wi-Fi, Contact (vCard), Payment (UPI), Email, Phone, SMS, Geo, Text
+- Full scan history with search, filter chips, swipe-to-delete, bulk delete
+- Saved/bookmarked scans
+- Contextual action buttons per QR type
+- Settings: auto-open URLs, vibrate, beep, save history toggle
+- Dark theme with yellow-green (#C8FF00) accent
+- Offline-first (all data stored locally)
+
+## Getting Started
+
+```bash
+npm install
+npx expo start
+```
 
 ## Project Structure
-- `lib/ui`: Screens and UI controller
-- `lib/repository`: Core scan workflow orchestration
-- `lib/services`: API, connectivity, and ambient-light integrations
-- `lib/storage`: Hive local persistence
-- `lib/models`: Data models for scan records and queued API events
-- `lib/utils`: QR payload type parser
 
-## Backend
-The backend endpoint is currently a placeholder in `lib/services/api_service.dart`:
-
-`https://example.com/api/qr-scan`
-
-## Run
-1. Install Flutter stable SDK.
-2. Run `flutter pub get`.
-3. Run `flutter run`.
+```
+App.tsx
+src/
+  constants/     # colors, QR type definitions
+  utils/         # QR parser, AsyncStorage helpers
+  hooks/         # useScanner, useScanHistory
+  components/    # TypeIcon, FilterChips, ViewFinder, ScanCard, ScanResultSheet
+  screens/       # Scan, History, Saved, Settings
+  navigation/    # Bottom tab navigator
+```
