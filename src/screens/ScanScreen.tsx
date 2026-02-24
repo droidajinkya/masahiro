@@ -6,15 +6,13 @@ import {
   TouchableOpacity,
   ScrollView,
   Linking,
-  Platform,
   Alert,
 } from 'react-native';
-import { Camera, CameraType, FlashMode } from 'expo-camera';
+import { CameraView, useCameraPermissions } from 'expo-camera';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
-import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import { Colors } from '../constants/colors';
 import { ScanRecord } from '../constants/qrTypes';
@@ -31,7 +29,7 @@ import { v4 as uuidv4 } from 'uuid';
 type FilterValue = 'All' | ScanRecord['type'];
 
 export function ScanScreen() {
-  const [cameraPermission, setCameraPermission] = useState<boolean | null>(null);
+  const [permission, requestPermission] = useCameraPermissions();
   const [flashEnabled, setFlashEnabled] = useState(false);
   const [isCameraActive, setIsCameraActive] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<ScanRecord | null>(null);
@@ -42,11 +40,9 @@ export function ScanScreen() {
   const { history, recentScans, addScan, toggleSaved } = useScanHistory();
 
   useEffect(() => {
-    Camera.requestCameraPermissionsAsync().then(({ status }) => {
-      setCameraPermission(status === 'granted');
-    });
+    requestPermission();
     loadSettings().then((s) => setAutoOpen(s.autoOpenURLs));
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Pause camera when screen loses focus
   useFocusEffect(
@@ -110,7 +106,7 @@ export function ScanScreen() {
     : recentScans.filter((r) => r.type === filter);
 
   // ─── Permission denied state ─────────────────────────────────────────────
-  if (cameraPermission === false) {
+  if (permission && !permission.granted && !permission.canAskAgain) {
     return (
       <View style={styles.permissionContainer}>
         <Ionicons name="camera-outline" size={64} color={Colors.textMuted} />
@@ -142,22 +138,20 @@ export function ScanScreen() {
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scroll}>
         {/* Camera Viewfinder Card */}
         <View style={styles.cameraCard}>
-          {isCameraActive && cameraPermission ? (
-            <Camera
+          {isCameraActive && permission?.granted ? (
+            <CameraView
               style={styles.camera}
-              type={CameraType.back}
-              flashMode={flashEnabled ? FlashMode.torch : FlashMode.off}
-              onBarCodeScanned={handleBarCodeScanned}
-              barCodeScannerSettings={{
-                barCodeTypes: [BarCodeScanner.Constants.BarCodeType.qr],
-              }}
+              facing="back"
+              flash={flashEnabled ? 'torch' : 'off'}
+              onBarcodeScanned={handleBarCodeScanned}
+              barcodeScannerSettings={{ barcodeTypes: ['qr'] }}
             >
               <ViewFinder
                 flashEnabled={flashEnabled}
                 onFlashToggle={() => setFlashEnabled((v) => !v)}
                 onGalleryPress={handleGalleryPress}
               />
-            </Camera>
+            </CameraView>
           ) : (
             <View style={styles.cameraPlaceholder}>
               <ViewFinder
